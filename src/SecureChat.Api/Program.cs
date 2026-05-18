@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using SecureChat.Api.Hubs;
 using SecureChat.Api.Services;
 using SecureChat.Application.Abstractions;
 using SecureChat.Infrastructure;
+using SecureChat.Infrastructure.Persistence;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +65,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// ── Auto Migration (컨테이너 최초 기동 시 DB 테이블 생성) ────────────────
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 // ── Middleware Pipeline ───────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
