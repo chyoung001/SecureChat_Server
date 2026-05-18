@@ -12,7 +12,8 @@ claudeignore
 .env
 *.env
 !.env.example
-appsettings.Production.json
+# appsettings.Production.json  ← Railway에서 DB 경로/로그 설정용이므로 포함
+appsettings.Local.json
 appsettings.Local.json
 secrets.json
 
