@@ -278,7 +278,7 @@ namespace SecureChat.Forms
                 ForeColor     = clrBody,
                 DropDownStyle = ComboBoxStyle.DropDown
             };
-            cmbServer.Items.AddRange(new object[] { "https://chat.example.com" });
+            cmbServer.Items.AddRange(new object[] { "https://securechatserver-production.up.railway.app" });
             pnlServerBody.Controls.Add(cmbServer);
             pnlServerBg.Controls.Add(pnlServerBody);
 
