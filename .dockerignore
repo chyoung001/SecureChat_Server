@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/logs/
+*.db
+*.db-shm
+*.db-wal
+**/Properties/launchSettings.json
+.git/
+.gitignore
+README.md
+CLAUDE.md
+PLAN.md
+SETTING.md
