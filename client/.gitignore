@@ -1,0 +1,116 @@
+# ================================================================
+# SecureChat .gitignore
+# ================================================================
+
+# ── 보안 민감 파일 (절대 커밋 금지) ──────────────────────────
+.env
+*.env
+!.env.example
+appsettings.Production.json
+appsettings.Local.json
+secrets.json
+
+# .NET User Secrets (dotnet user-secrets)
+# 경로: %APPDATA%\Microsoft\UserSecrets\ (자동 제외되지만 명시)
+**/secrets.json
+
+# SSL/TLS 인증서
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+*.cer
+
+# ── SQLite DB 파일 ────────────────────────────────────────────
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ── 로그 파일 ─────────────────────────────────────────────────
+logs/
+*.log
+log-*.txt
+
+# ── .NET 빌드 산출물 ──────────────────────────────────────────
+bin/
+obj/
+out/
+
+# ── .NET 패키지 복원 캐시 ─────────────────────────────────────
+.packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ── .NET 퍼블리시 산출물 ──────────────────────────────────────
+publish/
+**/publish/
+
+# ── Entity Framework Migrations (자동생성 파일 제외 안 함) ───
+# Migrations/ 폴더는 Git에 포함. 아래 줄 주석 유지
+# **/Migrations/
+
+# ── NuGet ─────────────────────────────────────────────────────
+*.nupkg
+*.snupkg
+.nuget/
+nuget.config.local
+
+# ── Visual Studio ─────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.userprefs
+*.userosscache
+*.sln.docstates
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+
+# ── Rider / JetBrains ─────────────────────────────────────────
+.idea/
+*.sln.iml
+
+# ── VS Code ───────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# ── Windows OS ────────────────────────────────────────────────
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ── macOS ─────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ── 테스트 결과 ───────────────────────────────────────────────
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+
+# ── 임시 파일 ─────────────────────────────────────────────────
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# ── 기타 도구 캐시 ────────────────────────────────────────────
+.claude/
+*.lscache
