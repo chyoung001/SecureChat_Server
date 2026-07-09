@@ -107,6 +107,10 @@ public class MessageService : IMessageService
         if (message is null)
             return Result.Failure("Message not found");
 
+        // 호출자가 해당 방의 멤버인지 검증 (임의 messageId로 가짜 Delivered 알림 전송 방지)
+        if (!await _uow.Rooms.IsMemberAsync(message.RoomId, callerId, ct))
+            return Result.Failure("Not a room member");
+
         var dto = new MessageStatusChangedDto(messageId, "Delivered");
         await _notifier.SendToUserAsync(message.SenderId, "MessageStatusChanged", dto, ct);
 

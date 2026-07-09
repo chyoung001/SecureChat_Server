@@ -61,6 +61,20 @@ public static class DependencyInjection
         // ── JWT Bearer ────────────────────────────────────────────────────
         var jwtSection = configuration.GetSection("Jwt");
 
+        // 서명키 검증: 미설정/플레이스홀더/짧은 키면 시작 시점에 명확히 실패시킨다.
+        // (그대로 두면 배포 후 로그인 시점에 안전하지 않은 기본값으로 서명되거나
+        //  HS256 최소 키 길이(256비트) 미달로 알아보기 힘든 런타임 예외가 발생한다.)
+        var secretKey = jwtSection["SecretKey"];
+        if (string.IsNullOrWhiteSpace(secretKey)
+            || secretKey == "REPLACE_WITH_USER_SECRETS"
+            || Encoding.UTF8.GetByteCount(secretKey) < 32)
+        {
+            throw new InvalidOperationException(
+                "Jwt:SecretKey가 설정되지 않았거나 안전하지 않습니다. " +
+                "32바이트(영문 기준 32자) 이상의 무작위 문자열을 환경 변수 " +
+                "Jwt__SecretKey 또는 user-secrets로 주입하세요.");
+        }
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -73,7 +87,7 @@ public static class DependencyInjection
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtSection["SecretKey"]!)),
+                        Encoding.UTF8.GetBytes(secretKey)),
                     ValidAlgorithms = [SecurityAlgorithms.HmacSha256], // alg=none 차단
                     ClockSkew = TimeSpan.Zero
                 };

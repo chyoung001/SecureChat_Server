@@ -74,8 +74,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ── Middleware Pipeline ───────────────────────────────────────────────────
-app.UseSwagger();
-app.UseSwaggerUI();
+// Swagger는 프로덕션에서 API 표면을 공개하지 않도록 개발 환경에서만 노출한다.
+if (!app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 if (!app.Environment.IsProduction())
     app.UseHttpsRedirection();
