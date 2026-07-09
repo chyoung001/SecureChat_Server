@@ -1,17 +1,19 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using SecureChat.Common;
 using SecureChat.Models;
 
 namespace SecureChat.Controls;
 
 public class ContactItemControl : UserControl
 {
-    private static readonly Color Canvas   = Color.White;
-    private static readonly Color Surface  = Color.FromArgb(245, 245, 245);
-    private static readonly Color Hairline = Color.FromArgb(238, 238, 238);
-    private static readonly Color Border   = Color.FromArgb(221, 221, 221);
-    private static readonly Color Body     = Color.FromArgb(34, 34, 34);
-    private static readonly Color Meta     = Color.FromArgb(153, 153, 153);
+    // 색상 토큰은 SecureChat.Common.Theme 에서 중앙 관리
+    private static readonly Color Canvas   = Theme.Canvas;
+    private static readonly Color Surface  = Theme.Surface;
+    private static readonly Color Hairline = Theme.Hairline;
+    private static readonly Color Border   = Theme.Border;
+    private static readonly Color Body     = Theme.Body;
+    private static readonly Color Meta     = Theme.Meta;
 
     public Contact Contact { get; }
     public bool IsOnline { get; set; }
@@ -120,18 +122,7 @@ public class ContactItemControl : UserControl
         g.DrawLine(divPen, textX, Height - 1, Width, Height - 1);
     }
 
-    private static Color GetAvatarColor(string seed)
-    {
-        Color[] palette =
-        [
-            Color.FromArgb( 52, 152, 219),
-            Color.FromArgb(231,  76,  60),
-            Color.FromArgb( 46, 204, 113),
-            Color.FromArgb(155,  89, 182),
-            Color.FromArgb(230, 126,  34),
-        ];
-        return palette[Math.Abs(seed.GetHashCode()) % palette.Length];
-    }
+    private static Color GetAvatarColor(string seed) => Theme.AvatarColor(seed);
 
     private static GraphicsPath RoundedRect(Rectangle r, int radius)
     {

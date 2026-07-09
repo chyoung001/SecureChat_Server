@@ -1,18 +1,19 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using SecureChat.Common;
 using SecureChat.Models;
 
 namespace SecureChat.Controls;
 
 public class RoomListItemControl : UserControl
 {
-    // Musinsa design tokens
-    private static readonly Color Canvas    = Color.White;                        // #ffffff
-    private static readonly Color Surface   = Color.FromArgb(245, 245, 245);     // #f5f5f5 hover
-    private static readonly Color Black     = Color.Black;                        // #000000 text / avatar
-    private static readonly Color Body      = Color.FromArgb(51, 51, 51);        // #333333 body text
-    private static readonly Color Meta      = Color.FromArgb(153, 153, 153);     // #999999 time / preview
-    private static readonly Color Hairline  = Color.FromArgb(238, 238, 238);     // #eeeeee divider
+    // 색상 토큰은 SecureChat.Common.Theme 에서 중앙 관리
+    private static readonly Color Canvas    = Theme.Canvas;    // 배경
+    private static readonly Color Surface   = Theme.Surface;   // hover 배경 (#f5f5f5)
+    private static readonly Color Black     = Theme.Ink;       // 텍스트 / 아바타
+    private static readonly Color Body      = Theme.InText;    // 본문 텍스트 (#333333)
+    private static readonly Color Meta      = Theme.Meta;      // 시간 / 미리보기 (#999999)
+    private static readonly Color Hairline  = Theme.Hairline;  // 구분선 (#eeeeee)
 
     public ChatRoom Room { get; private set; }
     public event EventHandler<ChatRoom>? Clicked;
@@ -160,18 +161,7 @@ public class RoomListItemControl : UserControl
         return Room.IsDirectMessage ? "1:1 대화" : $"그룹 · {Room.MemberIds.Count}명";
     }
 
-    private static Color GetAvatarColor(string seed)
-    {
-        Color[] palette =
-        [
-            Color.FromArgb( 52, 152, 219),
-            Color.FromArgb(231,  76,  60),
-            Color.FromArgb( 46, 204, 113),
-            Color.FromArgb(155,  89, 182),
-            Color.FromArgb(230, 126,  34),
-        ];
-        return palette[Math.Abs(seed.GetHashCode()) % palette.Length];
-    }
+    private static Color GetAvatarColor(string seed) => Theme.AvatarColor(seed);
 
     private static GraphicsPath RoundedRect(RectangleF b, float r)
     {

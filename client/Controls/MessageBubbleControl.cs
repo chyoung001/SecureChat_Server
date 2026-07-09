@@ -1,18 +1,19 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using SecureChat.Common;
 using SecureChat.Models;
 
 namespace SecureChat.Controls;
 
 public class MessageBubbleControl : UserControl
 {
-    // Musinsa design tokens
-    private static readonly Color Canvas    = Color.White;                     // #ffffff page bg
-    private static readonly Color OutBubble = Color.Black;                    // #000000 outgoing bubble
-    private static readonly Color InBubble  = Color.FromArgb(245, 245, 245); // #f5f5f5 incoming bubble
-    private static readonly Color OutText   = Color.White;                    // #ffffff outgoing text
-    private static readonly Color InText    = Color.FromArgb(51, 51, 51);    // #333333 incoming text
-    private static readonly Color Meta      = Color.FromArgb(153, 153, 153); // #999999 time / sender
+    // 색상 토큰은 SecureChat.Common.Theme 에서 중앙 관리
+    private static readonly Color Canvas    = Theme.Canvas;    // 페이지 배경
+    private static readonly Color OutBubble = Theme.Ink;       // 보낸 말풍선 (검정)
+    private static readonly Color InBubble  = Theme.Surface;   // 받은 말풍선 (#f5f5f5)
+    private static readonly Color OutText   = Theme.OnInk;     // 보낸 텍스트 (흰색)
+    private static readonly Color InText    = Theme.InText;    // 받은 텍스트 (#333333)
+    private static readonly Color Meta      = Theme.Meta;      // 시간 / 발신자 (#999999)
 
     private readonly Label  _lblSender;
     private readonly Label  _lblBody;
@@ -107,14 +108,14 @@ public class MessageBubbleControl : UserControl
 
         var bodySize = TextRenderer.MeasureText(
             _lblBody.Text, _lblBody.Font,
-            new Size(bubbleMax - 24, 4000),
+            new Size(bubbleMax - 32, 4000),
             TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix);
 
         _lblBody.Size     = new Size(bodySize.Width + 4, bodySize.Height + 4);
-        int bubbleWidth   = Math.Min(bubbleMax, bodySize.Width + 24);
-        int bubbleHeight  = bodySize.Height + 16;
+        int bubbleWidth   = Math.Min(bubbleMax, bodySize.Width + 32);
+        int bubbleHeight  = bodySize.Height + 20;
         _bubble.Size      = new Size(bubbleWidth, bubbleHeight);
-        _lblBody.Location = new Point(12, 8);
+        _lblBody.Location = new Point(16, 10);
 
         int topPad       = _hideHeader ? 2 : 6;
         int senderHeight = Message.IsMine ? 0 : (_lblSender.Visible ? _lblSender.Height + 2 : 0);
@@ -176,7 +177,7 @@ public class MessageBubbleControl : UserControl
         var rect = _bubble.ClientRectangle;
         rect.Width  -= 1;
         rect.Height -= 1;
-        using var path  = RoundedRect(rect, 4);
+        using var path  = RoundedRect(rect, Theme.BubbleRadius);
         using var brush = new SolidBrush(_bubble.BackColor);
         g.FillPath(brush, path);
     }
@@ -224,8 +225,8 @@ public class MessageBubbleControl : UserControl
         _                       => string.Empty
     };
 
-    private static readonly Color ReadColor      = Color.FromArgb(41, 182, 246);  // #29B6F6 blue
-    private static readonly Color DefaultMeta    = Color.FromArgb(153, 153, 153); // #999999
+    private static readonly Color ReadColor      = Theme.Read;   // 읽음 표시 (#29B6F6)
+    private static readonly Color DefaultMeta    = Theme.Meta;   // #999999
 
     public void UpdateStatus(MessageStatus status)
     {
@@ -244,18 +245,7 @@ public class MessageBubbleControl : UserControl
     //  Helpers
     // ─────────────────────────────────────────────────────────
 
-    private static Color GetAvatarColor(string seed)
-    {
-        Color[] palette =
-        [
-            Color.FromArgb( 52, 152, 219),
-            Color.FromArgb(231,  76,  60),
-            Color.FromArgb( 46, 204, 113),
-            Color.FromArgb(155,  89, 182),
-            Color.FromArgb(230, 126,  34),
-        ];
-        return palette[Math.Abs(seed.GetHashCode()) % palette.Length];
-    }
+    private static Color GetAvatarColor(string seed) => Theme.AvatarColor(seed);
 
     private static GraphicsPath RoundedRect(Rectangle rect, int radius)
     {
